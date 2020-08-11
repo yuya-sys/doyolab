@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="jp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GitHubとgit</title>
+    
+    <link rel="stylesheet" href="main.css">
+</head>
+
+
+<body>
+    <!--ホームに帰るためのボタン-->
+    <h2>git pushしたら起きたエラー</h2>
+    <p>先日、MySQLを使って作った掲示板のファイルを自分のGitHubにアップロードしたらその後のgitの更新にこんなエラーが出てきた</p>
+    <br>
+    <p>git push</p>
+    <p>rejected master -> master(fetch first)</p>
+    <p>error: failed to push some refs to 'https://github.com/パスワード/doyolab.git'</p>
+    <p>hint: Updates were rejected because the remote contains work that you do</p>
+    <p>hint: not have locally. This is usually caused by another repository pushing</p>
+    <p>to the same ref. You may want to first integrate the remote changes</p>
+    <p>hint: (e.g. git pull ....)before pushing again.</p>
+    <p>See the 'Note about fast-fowards' in 'git push --help for details</p>
+   <br>
+    <p>その日は、これを見てすぐに寝た</p>
+    <br>
+    <p>合宿後、時間が解決してくれているかなと思ったがそんなことはなかったので調べてみた</p>
+    <br>
+    <p>意外とネットには同じような人が多かった。いろいろな方法があったのでまず試してみた</p>
+    <p>今回はおそらくgit pushしないでファイルをアップロードしてその変更をGit Bash上ではなにもせずにgit pushしようとしたから起こったのだと思う</p>
+    <a href="https://www.softel.co.jp/blogs/tech/archives/3569">今回役立ったサイト</a>
+    <br>
+    <p>今後は、面倒なのでGitHub上ではファイルをアップロードしないようにします</p>
+    <a href="https://git-scm.com/book/ja/v2">Gitの基礎</a>
+    </body>
+</html>
