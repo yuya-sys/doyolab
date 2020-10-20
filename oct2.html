@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="jp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PHPのコード</title>
+    
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+<h2>PHPでできたもののコード</h2>
+<text>画面上で入力と削除ができます</text>
+    <code>
+<ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
+<li style="background-color:#EFF;">&lt;!DOCTYPE html&gt;</li>
+<li style="background-color:#EEF;">&lt;html lang = <font style="color:brown;">"ja"</font>&gt;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;head&gt;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta charset=<font style="color:brown;">"UTF-8"</font>&gt;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;mission3&lt;/title&gt;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/head&gt;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;body&gt;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;form action=<font style="color:brown;">""</font> method=<font style="color:brown;">"post"</font>&gt;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=<font style="color:brown;">"text"</font> name=<font style="color:brown;">"name"</font> placeholder=<font style="color:brown;">"名前"</font>&gt;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=<font style="color:brown;">"text"</font> name=<font style="color:brown;">"comment"</font> placeholder=<font style="color:brown;">"コメント"</font>&gt;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=<font style="color:brown;">"submit"</font> name=<font style="color:brown;">"submit"</font>&gt;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;form action=<font style="color:brown;">""</font> method=<font style="color:brown;">"post"</font>&gt;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=<font style="color:brown;">"number"</font> name=<font style="color:brown;">"delete"</font> placeholder=<font style="color:brown;">"削除対象番号"</font> &gt;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=<font style="color:brown;">"submit"</font> name=<font style="color:brown;">"submit"</font> value=<font style="color:brown;">"削除"</font>&gt;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$str = $_POST[<font style="color:brown;">"str"</font>];</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$name  = $_POST[<font style="color:brown;">"name"</font>];</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$del = $_POST[<font style="color:brown;">"del"</font>];</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;if(empty($str.$name)){</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;}else{</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$filename=<font style="color:brown;">"mission3-3.txt"</font>;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fp=fopen($filename,<font style="color:brown;">"a"</font>);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$date = date(<font style="color:brown;">"Y年m月d日H時i分s秒"</font>);   </li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$num = count(file($filename));</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$num++;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fwrite($fp,$num.<font style="color:brown;">"&lt;&gt;"</font>.$name.<font style="color:brown;">"&lt;&gt;"</font>.$str.<font style="color:brown;">"&lt;&gt;"</font>.$date.PHP_EOL);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fclose($fp);</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;}</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style="color:green;font-style:italic;">//削除</font></li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($delete)){</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$lines=file($filename,FILE_IGNORE_NEW_LINES);</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fp=fopen($filename,<font style="color:brown;">"w"</font>);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($lines as $line){</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$line=explode(<font style="color:brown;">"&lt;&gt;"</font>,$line);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($delete!= $line[0]){</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fwrite($fp,$line[0].<font style="color:brown;">"&lt;&gt;"</font>.$line[1].<font style="color:brown;">"&lt;&gt;"</font>.$line[2].<font style="color:brown;">"&lt;&gt;"</font>.$line[3].PHP_EOL);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}       <font style="color:green;font-style:italic;">//echo $explode[0],"",$explode[1],"",$explode[2],"",$explode[3]."&lt;br&gt;";</font></li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style="color:green;font-style:italic;">//$fp=fopen($filename,"a");</font></li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style="color:green;font-style:italic;">//$txt=$form[0]."&lt;&gt;".$form[1]."&lt;&gt;".$form[2]."&lt;&gt;".$form[3].PHP_EOL;</font></li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style="color:green;font-style:italic;">// fwrite($fp,$txt);</font></li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}fclose($fp);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style="color:green;font-style:italic;">//画面表示</font></li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(file_exists($filename)){</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$lines=file($filename,FILE_IGNORE_NEW_LINES);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($lines as $line){</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$line=explode(<font style="color:brown;">"&lt;&gt;"</font>,$line);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $line[0].<font style="color:brown;">""</font>;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $line[1].<font style="color:brown;">""</font>;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $line[2].<font style="color:brown;">""</font>;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $line[3].<font style="color:brown;">"&lt;br&gt;"</font>;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} </li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?&gt;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/body&gt;</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/html&gt;</li>
+</ol></code></body>
