@@ -8,6 +8,7 @@
 </head>
 <body>
  <p>出力、削除、編集ができる掲示板作成途中。出力したものを削除・編集はできるとこまでいったが、編集したものをもう一度編集しようとすると反応しない。以前紹介したようなwarning,notice,errorは出なくなった。</p>
+    <p>原因を調べたり、聞いてみたところ編集部分のbindparmでpassに対するパラメーターの型が原因だと分かった。新規投稿の部分はPDO::PARAM_STRになっているが編集部分はPDO::PARAM_INTにしていた。そこを_STRで統一した。</p>
     <code>
 <ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
 <li style="background-color:#EFF;">&lt;?php</li>
