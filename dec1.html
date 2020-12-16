@@ -3,187 +3,85 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>途中経過</title>
+    <title>MySQLまとめ</title>
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
- <p>出力、削除、編集ができる掲示板作成途中。出力したものを削除・編集はできるとこまでいったが、編集したものをもう一度編集しようとすると反応しない。以前紹介したようなwarning,notice,errorは出なくなった。</p>
-    <p>原因を調べたり、聞いてみたところ編集部分のbindparmでpassに対するパラメーターの型が原因だと分かった。新規投稿の部分はPDO::PARAM_STRになっているが編集部分はPDO::PARAM_INTにしていた。そこを_STRで統一した。</p>
+<p>掲示板つくるなかで使ったMySQLの文を紹介</p>
+<h2>CREATE文：データベース内にテーブルを作成</h2>
+<p>データを登録するための「テーブル」を作成する
+id ・自動で登録されていうナンバリング。
+name ・名前を入れる。文字列、半角英数で32文字。
+comment ・コメントを入れる。文字列、長めの文章も入る。
+この３つを作成したいとき
+</p>
     <code>
 <ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
-<li style="background-color:#EFF;">&lt;?php</li>
-<li style="background-color:#EEF;"><font style="color:green;font-style:italic;">// DB接続設定</font></li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$dsn =******;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$user =*****;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$password =********<font style="color:brown;">';</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$pdo = new PDO($dsn, $user, $password, array(PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_WARNING));</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
-<li style="background-color:#EEF;">$sql = "CREATE TABLE IF NOT EXISTS test_images"</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;." ("</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;. "id INT AUTO_INCREMENT PRIMARY KEY,"</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;. "name char(32),"</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;. "pass TEXT,"</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;. "comment TEXT,"</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;.");";</li>
-<li style="background-color:#EFF;"></li>
-<li style="background-color:#EEF;">if (!empty($_POST["name"]) &amp;&amp; !empty($_POST["comment"]) &amp;&amp; !empty($_POST["pass"]) &amp;&amp;empty($_POST["hidden"])) {</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$name = $_POST["name"];</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$comment = $_POST["comment"];</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$pass = $_POST["pass"];</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$sql = '</font>INSERT INTO test_images(name, comment, pass)</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VALUES (:name, :comment, :pass)<font style="color:brown;">';</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt = $pdo-&gt;prepare($sql);</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindValue('</font>:name<font style="color:brown;">', $name, PDO::PARAM_STR);</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindValue('</font>:comment<font style="color:brown;">', $comment, PDO::PARAM_STR);</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindValue('</font>:pass<font style="color:brown;">', $pass, PDO::PARAM_STR);</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;execute();</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;}</li>
-<li style="background-color:#EEF;"></li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;//削除機能</li>
-<li style="background-color:#EEF;"></li>
-<li style="background-color:#EFF;">if(!empty($_POST["del"]) &amp;&amp; !empty($_POST["delpass"])){ //削除フォームに入力がある場合</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//変数指定</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$del = $_POST["del"];</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$delpass = $_POST["delpass"];</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//削除処理</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$sql = '</font>SELECT * FROM test_images<font style="color:brown;">';</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt = $pdo-&gt;query($sql);</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$results = $stmt-&gt;fetchAll();</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($results as $row){</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($row['</font>id<font style="color:brown;">']==$del){ //該当投稿ならば</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($row['</font>pass<font style="color:brown;">']==$delpass){ //パスワードを照会</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$sql = '</font>delete from test_images where id=:id<font style="color:brown;">';       </li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt = $pdo-&gt;prepare($sql);</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindParam('</font>:id<font style="color:brown;">', $del, PDO::PARAM_INT);</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;execute();</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;}</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;//編集機能</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;//編集したい投稿を投稿フォームに表示する</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;if(!empty($_POST["edit"]) &amp;&amp; !empty($_POST["edpass"])){ //編集申請フォームに入力がある場合</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$edit = $_POST["edit"];</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$edpass = $_POST["edpass"];</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$sql = '</font>SELECT * FROM test_images<font style="color:brown;">';</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt = $pdo-&gt;query($sql);</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$results = $stmt-&gt;fetchAll();</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($results as $row){</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($row['</font>id<font style="color:brown;">']==$edit){ //該当投稿ならば</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($row['</font>pass<font style="color:brown;">']==$edpass){ //パスワードを照会</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$name_e = $row['</font>name<font style="color:brown;">' //投稿を編集する</li>
-<li style="background-color:#EFF;">if(!empty($_POST["name"]) &amp;&amp; !empty($_POST["comment"]) &amp;&amp; !empty($_POST["pass"]) &amp;&amp;!empty($_POST["hidden"])){</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//変数指定</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$name = $_POST["name"];</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$comment = $_POST["comment"];</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$pass = $_POST["pass"];</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$hidden = $_POST["hidden"];</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$ediname = $name."(編集済)";</li>
-<li style="background-color:#EEF;"></li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//更新処理</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$sql = '</font>UPDATE test_images SET name=:name, comment=:comment, pass=:pass WHERE id=:id<font style="color:brown;">';</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt = $pdo-&gt;prepare($sql);</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindParam('</font>:id<font style="color:brown;">', $hidden, PDO::PARAM_INT);</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindParam('</font>:name<font style="color:brown;">', $ediname, PDO::PARAM_STR);</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindParam('</font>:comment<font style="color:brown;">', $comment, PDO::PARAM_STR);</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindParam('</font>:pass<font style="color:brown;">', $pass, PDO::PARAM_INT);</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;execute();</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?&gt;</li>
-<li style="background-color:#EEF;"></li>
-<li style="background-color:#EFF;">&lt;?php</li>
-<li style="background-color:#EEF;"></li>
-<li style="background-color:#EFF;"></li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$sql = '</font>SELECT * FROM test_images<font style="color:brown;">';</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$stmt = $pdo-&gt;query($sql);</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$results = $stmt-&gt;fetchAll();</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;foreach ($results as $row){</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $row['</font>id<font style="color:brown;">'].'</font>,<font style="color:brown;">';</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $row['</font>name<font style="color:brown;">'].'</font>,<font style="color:brown;">';</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $row['</font>comment<font style="color:brown;">'].'</font>&lt;br&gt;';?&gt;</li>
-<li style="background-color:#EFF;">&lt;?php</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;}</li>
-<li style="background-color:#EFF;">?&gt;</li>
-<li style="background-color:#EEF;"></li>
-<li style="background-color:#EFF;">&lt;html lang="ja"&gt;</li>
-<li style="background-color:#EEF;">&lt;head&gt;</li>
-<li style="background-color:#EFF;">&lt;meta charset="utf-8"&gt;</li>
-<li style="background-color:#EEF;">&lt;title&gt;留学ポスト&lt;/title&gt;</li>
-<li style="background-color:#EFF;">&lt;style&gt;</li>
-<li style="background-color:#EEF;">body{</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;background-color: #97cdf3;</li>
-<li style="background-color:#EEF;">}</li>
-<li style="background-color:#EFF;">h1 {</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;margin-bottom: 30px;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;font-size: 100%;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;color: #00a096;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;text-align: center;</li>
-<li style="background-color:#EEF;">}</li>
-<li style="background-color:#EFF;">input[type="text"] {</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;margin-bottom: 20px;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;padding: 10px;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;font-size: 86%;</li>
-<li style="background-color:#EFF;">&nbsp;border: 1px solid #ddd;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 3px;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;background: #fff;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;width: 200px;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
-<li style="background-color:#EEF;">}</li>
-<li style="background-color:#EFF;">input[type="submit"] {</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;padding: 10px 10px;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;color: #fff;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;font-size: 86%;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;line-height: 1.0em;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;cursor: pointer;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;border: none;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 5px;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;background-color:#000000；</li>
-<li style="background-color:#EEF;">}</li>
-<li style="background-color:#EFF;">input[type=submit]:hover,</li>
-<li style="background-color:#EEF;">button:hover {background-color: #80a491;</li>
-<li style="background-color:#EFF;">}</li>
-<li style="background-color:#EEF;"></li>
-<li style="background-color:#EFF;">hr {</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;margin: 20px 0;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;padding: 0;</li>
-<li style="background-color:#EEF;">}</li>
-<li style="background-color:#EFF;">form{</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;display: flex;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;justify-content: center;</li>
-<li style="background-color:#EEF;">}</li>
-<li style="background-color:#EFF;">&lt;/style&gt;</li>
-<li style="background-color:#EEF;">&lt;/head&gt;</li>
-<li style="background-color:#EFF;">&lt;body&gt;</li>
-<li style="background-color:#EEF;">&lt;h1&gt;留学ポスト&lt;/h1&gt;</li>
-<li style="background-color:#EFF;">&lt;hr&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;form action="" method="POST"&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" name="name" placeholder="名前" value="&lt;?php if(isset($name_e)){echo htmlspecialchars($name_e);}?&gt;"&gt;&lt;br&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" name="comment" placeholder="コメント" value="&lt;?php if(isset($comment_e)){echo htmlspecialchars($comment_e);} ?&gt;"&gt;&lt;br&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" name="pass" placeholder="パスワード"&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="hidden" name="hidden" value="&lt;?php if(isset($num_e)){echo htmlspecialchars($num_e);} ?&gt;"&gt;&lt;br&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="submit" value="送信"&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--削除フォーム--&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;form action="" method="post"&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="number" name="del" placeholder="削除対象番号"&gt;&lt;br&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" name="delpass" placeholder="パスワード"&gt;&lt;br&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="submit" name="submit" value="削除"&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt; &lt;!--編集申請フォーム--&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;form action="" method="post"&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="number" name="edit" placeholder="編集対象番号"&gt;&lt;br&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" name="edpass" placeholder="パスワード"&gt;&lt;br&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="submit" name="submit" value="編集"&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;</li>
-<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;</li>
-<li style="background-color:#EFF;"></li>
-<li style="background-color:#EEF;">&lt;/body&gt;</li>
-<li style="background-color:#EFF;">&lt;/html&gt;</li>
-<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li style="background-color:#EFF;">$sql = "CREATE TABLE IF NOT EXISTS test1"</li>
+<li style="background-color:#EEF;">." ("</li>
+<li style="background-color:#EFF;">. "id INT AUTO_INCREMENT PRIMARY KEY,"</li>
+<li style="background-color:#EEF;">. "name char(32),"</li>
+<li style="background-color:#EFF;">. "comment TEXT"</li>
+<li style="background-color:#EEF;">.");";</li>
+<li style="background-color:#EFF;">$stmt = $pdo-&gt;query($sql);</li>
 </ol></code>
- </body>
-</html>
-
+    <br>
+<h3>テーブルがしっかりできているか確認する方法</h3>
+<code>
+<ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
+<li style="background-color:#EFF;">$sql ='SHOW TABLES';</li>
+<li style="background-color:#EEF;">$result = $pdo -&gt; query($sql);</li>
+<li style="background-color:#EFF;">foreach ($result as $row){</li>
+<li style="background-color:#EEF;">echo $row[0];</li>
+<li style="background-color:#EFF;">echo '&lt;br&gt;';</li>
+<li style="background-color:#EEF;">}</li>
+<li style="background-color:#EFF;">echo "&lt;hr&gt;";</li>
+</ol></code>
+<p>
+実行したときにtest1と表示されればOK   
+最初にこの方法でテーブルができているか確認しながら進めるのがおすすめ</p>
+   <br> 
+<h3>テーブルができていることを確認したら，次にテーブルの構成要素も確認しておく</h3>
+    <code>
+<ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
+<li style="background-color:#EFF;">$sql ='SHOW CREATE TABLE tbtest';</li>
+<li style="background-color:#EEF;">$result = $pdo -&gt; query($sql);</li>
+<li style="background-color:#EFF;">foreach ($result as $row){</li>
+<li style="background-color:#EEF;">echo $row[1];</li>
+<li style="background-color:#EFF;">}</li>
+<li style="background-color:#EEF;">echo "&lt;hr&gt;";</li>
+</ol></code>
+<p>
+こちらは実行したときに，id ,name,commentが表示されていればOK</p>
+<br>
+<h2>INSERT文：データを入力（データレコードの挿入）</h2>
+    <code>
+<ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
+<li style="background-color:#EFF;">$sql = $pdo -&gt; prepare("INSERT INTO test1 (name, comment) VALUES (:name, :comment)");</li>
+<li style="background-color:#EEF;">$sql -&gt; bindParam(':name', $name, PDO::PARAM_STR);</li>
+<li style="background-color:#EFF;">$sql -&gt; bindParam(':comment', $comment, PDO::PARAM_STR);</li>
+<li style="background-color:#EEF;">$name = '（好きな名前）';</li>
+<li style="background-color:#EFF;">$comment = '（好きなコメント）'; //好きな名前、好きな言葉は自分で決める</li>
+<li style="background-color:#EEF;">$sql -&gt; execute();</li>
+</ol></code>
+<p>
+こちらを実行しても何も起こらないのでしっかりデータが挿入されたかを確認する必要がある</p>
+<br>
+<h3>SELECT文：入力したデータレコードを抽出し、表示する</h3>
+    <code>
+<ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
+<li style="background-color:#EFF;">$sql = 'SELECT * FROM test1';</li>
+<li style="background-color:#EEF;">$stmt = $pdo-&gt;query($sql);</li>
+<li style="background-color:#EFF;">$results = $stmt-&gt;fetchAll();</li>
+<li style="background-color:#EEF;">foreach ($results as $row){</li>
+<li style="background-color:#EFF;">//$rowの中にはテーブルのカラム名が入る</li>
+<li style="background-color:#EEF;">echo $row['id'].',';</li>
+<li style="background-color:#EFF;">echo $row['name'].',';</li>
+<li style="background-color:#EEF;">echo $row['comment'].'&lt;br&gt;';</li>
+<li style="background-color:#EFF;">echo "&lt;hr&gt;";</li>
+<li style="background-color:#EEF;">}</li>
+</ol></code>
+<p>
+これでINSERT文で実行した名前とコメントが表示されていれば成功</p>
+<br>
+    </body>
