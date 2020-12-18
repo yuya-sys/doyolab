@@ -84,4 +84,43 @@ comment ・コメントを入れる。文字列、長めの文章も入る。
 <p>
 これでINSERT文で実行した名前とコメントが表示されていれば成功</p>
 <br>
-    </body>
+<h2>UPDATE文：入力されているデータレコードの内容を編集</h2>
+<p>tets1のテーブルで1つめに投稿されたものを変更する場合</p>
+<code>
+<ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
+<li style="background-color:#EFF;">$id = 1; //変更する投稿番号</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$name = "（変更したい名前）";</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$comment = "（変更したいコメント）"; //変更したい名前、変更したいコメントは自分で決めること</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$sql = 'UPDATE test1 SET name=:name,comment=:comment WHERE id=:id';</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$stmt = $pdo-&gt;prepare($sql);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindParam(':name', $name, PDO::PARAM_STR);</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindParam(':comment', $comment, PDO::PARAM_STR);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindParam(':id', $id, PDO::PARAM_INT);</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;execute();</li>
+</ol></code>
+    <br>
+<h2>DELETE文：入力したデータレコードを削除</h2>
+<p>データベースのテーブルに登録したデータレコードは、DELETE文 で削除する事が可能です。
+ここでは、id の値が 2 の データレコードを削除してみましょう。</p>
+<code>
+<ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
+<li style="background-color:#EFF;">$id = 2;</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$sql = 'delete from tbtest where id=:id';</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$stmt = $pdo-&gt;prepare($sql);</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;bindParam(':id', $id, PDO::PARAM_INT);</li>
+<li style="background-color:#EFF;">&nbsp;&nbsp;&nbsp;&nbsp;$stmt-&gt;execute();</li>
+</ol></code>
+    <br>
+    <h2>DROP文：作成されたテーブル自体を削除する</h2>
+<p>DROP文 は、既に作成されたテーブル自体を丸ごと削除するSQL文です。
+「テーブルを消しますか？」などの事前確認なしに削除が行われ、データも残りません。
+また（困ったことに？）SQL自体は非常にシンプルで、実行も簡単です。
+従って、使用する際は細心の注意をしてください。</p>
+<code>
+<ol style="list-style:decimal-leading-zero outside;in-left:0;padding-left:36px;margin:0;background-color:#EEF;color:#000;">
+<li style="background-color:#EFF;">$sql = 'DROP TABLE test1';</li>
+<li style="background-color:#EEF;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$stmt = $pdo-&gt;query($sql);</li>
+</ol></code>
+<p>このミッションは、実行が成功しても画面に結果が出力されません。
+このミッションが正しく実行されているかどうかは mission_4-3 、SHOW TABLES で確認することになります。</p>
+ </body>
